@@ -73,6 +73,7 @@ local*
 .idea/
 .vscode/
 .DS_Store
+cmake-build-debug-coverage
 venv
 *.log
 *-debug
