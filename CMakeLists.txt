@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.17)
 project(tp_c_cpp_homework C)
 
-set(CMAKE_C 11)
-set(CMAKE_C_CPPCHECK "cppcheck")
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_CPPCHECK "cppcheck")
 
-find_program(CMAKE_C_CPPCHECK NAMES cppcheck)
-if (CMAKE_C_CPPCHECK)
+find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
+if (CMAKE_CXX_CPPCHECK)
     list(
-            APPEND CMAKE_C_CPPCHECK
+            APPEND CMAKE_CXX_CPPCHECK
             "--enable=performance,portability,warning,style"
     )
 endif()
