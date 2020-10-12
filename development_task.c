@@ -33,9 +33,33 @@ int check_correct_date(const int* date_for_checking) {
   return 1;
 }
 
+int printf_task(const DevelopmentTask* my_task) {
+  if (my_task == NULL) {
+    puts("ERROR");
+    return -1;
+  }
+
+  printf("Номер задачи: %d\n", my_task->number);
+  printf("Приоритет: %d\n", my_task->priority);
+  printf("Дата создания: ");
+  for (int i = 0; i < (LEN_OF_PRODUCTION_DATE - 1); ++i) {
+    printf("%d.", my_task->production_date[i]);
+  }
+  printf("%d\n", my_task->production_date[LEN_OF_PRODUCTION_DATE - 1]);
+  printf("Описание задачи: ");
+
+  int len_description = len_of_string(my_task->description);
+  for (int i = 0; i < len_description; ++i) {
+    printf("%c", my_task->description[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
+
 DevelopmentTask* create_DevelopmentTask(int number, char* description,
-                                        int priority, char* production_date) {
-  if (description == NULL || check_correct_date(production_date)) {
+                                        int priority, int* production_date) {
+  if (description == NULL || !check_correct_date(production_date)) {
     puts("ERROR");
     return NULL;
   }
@@ -43,7 +67,7 @@ DevelopmentTask* create_DevelopmentTask(int number, char* description,
   DevelopmentTask* my_task = (DevelopmentTask*)malloc(sizeof(DevelopmentTask));
 
   size_t len_description = len_of_string(description);
-  my_task->description = (char*)malloc(len_description);
+  my_task->description = (char*)malloc((len_description + 1));
 
   if (my_task == NULL || my_task->description == NULL) {
     printf("%s", "ENOMEM");
@@ -53,6 +77,7 @@ DevelopmentTask* create_DevelopmentTask(int number, char* description,
   for (int i = 0; i < len_description; ++i) {
     my_task->description[i] = description[i];
   }
+  my_task->description[len_description] = END_OF_STRING;
 
   for (int i = 0; i < LEN_OF_PRODUCTION_DATE; ++i) {
     my_task->production_date[i] = production_date[i];
@@ -66,91 +91,12 @@ DevelopmentTask* create_DevelopmentTask(int number, char* description,
 
 int free_development_task(DevelopmentTask* task) {
   if (task == NULL) {
-    puts("Error");
+    puts("ERROR");
     return 1;
   }
 
   free(task->description);
   free(task);
-
-  return 0;
-}
-
-//Basic operations
-int get_number_of_task(const DevelopmentTask* task) {
-  if (task == NULL) {
-    puts("ERROR");
-    return -1;
-  }
-
-  return task->number;
-}
-
-char* get_description_of_task(const DevelopmentTask* task) {
-  if (task == NULL) {
-    puts("ERROR");
-    return NULL;
-  }
-
-  return task->description;
-}
-
-int get_priority_of_task(const DevelopmentTask* task) {
-  if (task == NULL) {
-    puts("ERROR");
-    return -1;
-  }
-
-  return task->priority;
-}
-
-int* get_production_date_of_task(const DevelopmentTask* task) {
-  if (task == NULL) {
-    puts("ERROR");
-    return NULL;
-  }
-
-  return task->production_date;
-}
-
-//Basic change operations
-int change_description(DevelopmentTask* task,char* new_description) {
-  if (task == NULL || new_description == NULL) {
-    puts("ERROR");
-    return -1;
-  }
-
-  int len_new_description = len_of_string(new_description);
-  int len_description = len_of_string(task->description);
-
-  if (len_new_description > len_description) {
-    char *save_description = (char*)realloc(task->description, 2 * len_description * sizeof(char));
-
-    if (save_description == NULL) {
-      puts("Not enough memory, operation aborted!");
-      return -1;
-    } else {
-      task->description = save_description;
-    }
-
-  }
-
-  for (int i = 0; i < len_new_description; ++i) {
-    task->description[i] = new_description[i];
-  }
-
-  task->description[len_new_description] = END_OF_STRING;
-
-  return 0;
-}
-
-int change_priority(DevelopmentTask* task, int new_priority){
-  if (task == NULL) {
-    puts("ERROR");
-    return -1;
-  }
-
-  task->priority = new_priority;
 
   return 0;
 }
