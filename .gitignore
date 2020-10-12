@@ -70,6 +70,7 @@ dkms.conf
 
 # Local
 local*
+run_cppcheck.sh
 .idea/
 .vscode/
 .DS_Store
