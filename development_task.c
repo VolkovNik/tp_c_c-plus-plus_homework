@@ -3,13 +3,24 @@
 
 #include "development_task.h"
 
-int len_of_string(const char* string) {
-  if (string == NULL) {
-    puts("ERROR");
-    return -1;
+int get_date(int* new_production_date) {
+  if (new_production_date == NULL) {
+    return EXIT_FAILURE;
   }
 
-  int length = 0;
+  for (size_t i = 0; i < LEN_OF_PRODUCTION_DATE; ++i) {
+    scanf("%d", &new_production_date[i]);
+  }
+
+  return EXIT_SUCCESS;
+}
+
+size_t len_of_string(const char* string) {
+  if (string == NULL) {
+    return EXIT_FAILURE;
+  }
+
+  size_t length = 0;
   while (string[length] != END_OF_STRING) {
     ++length;
   }
@@ -17,69 +28,71 @@ int len_of_string(const char* string) {
   return length;
 }
 
+
+
 int check_correct_date(const int* date_for_checking) {
   if (date_for_checking == NULL) {
-    puts("ERROR");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   if (date_for_checking[0] > 31 || date_for_checking[0] < 1 ||
       date_for_checking[1] > 12 || date_for_checking[1] < 1 ||
       date_for_checking[2] > 2020 || date_for_checking[2] < 1980) {
-    puts("WRONG DATE OF CREATION");
-    return 0;
+    return EXIT_FAILURE;
   }
 
-  return 1;
+  return EXIT_SUCCESS;
 }
 
 int printf_task(const DevelopmentTask* my_task) {
   if (my_task == NULL) {
-    puts("ERROR");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   printf("Номер задачи: %d\n", my_task->number);
   printf("Приоритет: %d\n", my_task->priority);
   printf("Дата создания: ");
-  for (int i = 0; i < (LEN_OF_PRODUCTION_DATE - 1); ++i) {
+  for (size_t i = 0; i < (LEN_OF_PRODUCTION_DATE - 1); ++i) {
     printf("%d.", my_task->production_date[i]);
   }
   printf("%d\n", my_task->production_date[LEN_OF_PRODUCTION_DATE - 1]);
   printf("Описание задачи: ");
 
   int len_description = len_of_string(my_task->description);
-  for (int i = 0; i < len_description; ++i) {
+  for (size_t i = 0; i < len_description; ++i) {
     printf("%c", my_task->description[i]);
   }
   printf("\n");
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 DevelopmentTask* create_DevelopmentTask(int number, char* description,
                                         int priority, int* production_date) {
-  if (description == NULL || !check_correct_date(production_date)) {
-    puts("ERROR");
+  if (description == NULL || check_correct_date(production_date)) {
     return NULL;
   }
 
   DevelopmentTask* my_task = (DevelopmentTask*)malloc(sizeof(DevelopmentTask));
 
-  size_t len_description = len_of_string(description);
-  my_task->description = (char*)malloc((len_description + 1));
-
-  if (my_task == NULL || my_task->description == NULL) {
-    printf("%s", "ENOMEM");
+  if (my_task == NULL) {
     return NULL;
   }
 
-  for (int i = 0; i < len_description; ++i) {
+  size_t len_description = len_of_string(description);
+  my_task->description = (char*)malloc((len_description + 1));
+
+  if (my_task->description == NULL) {
+    free(my_task);
+    return NULL;
+  }
+
+  for (size_t i = 0; i < len_description; ++i) {
     my_task->description[i] = description[i];
   }
   my_task->description[len_description] = END_OF_STRING;
 
-  for (int i = 0; i < LEN_OF_PRODUCTION_DATE; ++i) {
+  for (size_t i = 0; i < LEN_OF_PRODUCTION_DATE; ++i) {
     my_task->production_date[i] = production_date[i];
   }
 
@@ -91,12 +104,112 @@ DevelopmentTask* create_DevelopmentTask(int number, char* description,
 
 int free_development_task(DevelopmentTask* task) {
   if (task == NULL) {
-    puts("ERROR");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   free(task->description);
   free(task);
 
-  return 0;
+  return EXIT_SUCCESS;
+}
+
+// сортировка по одному ключу(key) в порядке возрастания, в нашем случае ключ это - кол-во дней, кол-во месяцев, кол-во лет,
+// макс значение приоритета
+DevelopmentTask** distribution_sort(int key, size_t number_of_keys, DevelopmentTask** my_tasks, size_t size_of_tasks) {
+  if (my_tasks == NULL) {
+    return NULL;
+  }
+
+  int* count = (int*)malloc(number_of_keys * sizeof(int));
+  if (count == NULL) {
+    return NULL;
+  }
+
+  for (size_t i = 0; i < number_of_keys; ++i) {
+    count[i] = 0;
+  }
+
+  int key_value = 0;
+  for (size_t j = 0; j < size_of_tasks; ++j) {
+    switch (key) {
+      case NUMBER_OF_YEARS:
+        key_value = my_tasks[j]->production_date[2] - MIN_YEAR;
+        break;
+      case NUMBER_OF_MONTHS:
+        key_value = my_tasks[j]->production_date[1] - 1;
+        break;
+      case NUMBER_OF_DAYS:
+        key_value = my_tasks[j]->production_date[0] - 1;
+        break;
+      case MAX_PRIORITY:
+        key_value = my_tasks[j]->priority + MAX_PRIORITY;
+        break;
+    }
+    count[key_value] = count[key_value] + 1;
+
+  }
+  for (size_t i = 1; i < number_of_keys; ++i) {
+    count[i] = count[i] + count[i-1];
+  }
+
+  DevelopmentTask** sorted_my_tasks = (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
+  if (sorted_my_tasks == NULL) {
+    return NULL;
+  }
+
+  for (size_t j = size_of_tasks - 1; j < SIZE_MAX; --j) {
+    switch (key) {
+      case NUMBER_OF_YEARS:
+        key_value = my_tasks[j]->production_date[2] - MIN_YEAR;
+        break;
+      case NUMBER_OF_MONTHS:
+        key_value = my_tasks[j]->production_date[1] - 1;
+        break;
+      case NUMBER_OF_DAYS:
+        key_value = my_tasks[j]->production_date[0] - 1;
+        break;
+      case MAX_PRIORITY:
+        key_value = my_tasks[j]->priority + MAX_PRIORITY;
+        break;
+    }
+    int i = count[key_value] - 1;
+    count[key_value] = i;
+    sorted_my_tasks[i] = my_tasks[j];
+  }
+
+  free(count);
+  free(my_tasks);
+
+  return sorted_my_tasks;
+}
+
+
+// поразрядная сортировка нашей структуры, где keys - ключи
+DevelopmentTask** radix_sort(int* keys, size_t size_of_keys, DevelopmentTask** my_tasks, size_t size_of_my_tasks) {
+  if (my_tasks == NULL) {
+    return NULL;
+  }
+
+  DevelopmentTask** sorted_my_tasks = (DevelopmentTask**)malloc(size_of_my_tasks * sizeof(DevelopmentTask*));
+  if (sorted_my_tasks == NULL) {
+    return NULL;
+  }
+
+  for (size_t i = 0; i < size_of_my_tasks; ++i) {
+    sorted_my_tasks[i] = my_tasks[i];
+    sorted_my_tasks[i]->priority *= -1; // чтобы отсортировать в правильно порядке
+  }
+
+  for (size_t i = 0; i < size_of_keys; ++i) {
+    sorted_my_tasks = distribution_sort(keys[i], keys[i], sorted_my_tasks, size_of_my_tasks);
+    if (sorted_my_tasks == NULL) {
+      return NULL;
+    }
+  }
+
+  for (size_t i = 0; i < size_of_my_tasks; ++i) {
+    sorted_my_tasks[i]->priority *= -1; //возвращаю правильное значение
+  }
+
+  return sorted_my_tasks;
 }
