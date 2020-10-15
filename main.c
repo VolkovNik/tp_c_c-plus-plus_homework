@@ -19,7 +19,8 @@ char* get_string() {
     if (len >= capacity) {
       capacity *= 2;
 
-      char* save_description = (char*)realloc(new_description, capacity * sizeof(char));
+      char* save_description =
+          (char*)realloc(new_description, capacity * sizeof(char));
 
       if (save_description == NULL) {
         return NULL;
@@ -41,12 +42,13 @@ int main() {
   printf("Введите количество задач: ");
   scanf("%d", &number_of_tasks);
 
-  DevelopmentTask** tasks = (DevelopmentTask**)malloc(number_of_tasks * sizeof(DevelopmentTask*));
+  DevelopmentTask** tasks =
+      (DevelopmentTask**)malloc(number_of_tasks * sizeof(DevelopmentTask*));
   if (tasks == NULL) {
     return EXIT_FAILURE;
   }
 
-  for(size_t i = 0; i < number_of_tasks; ++i) {
+  for (size_t i = 0; i < number_of_tasks; ++i) {
     int new_priority_of_task;
     printf("Введите приоритет задачи: ");
     scanf("%d", &new_priority_of_task);
@@ -61,7 +63,8 @@ int main() {
       return EXIT_FAILURE;
     }
 
-    tasks[i] = create_DevelopmentTask(i, new_description, new_priority_of_task, new_production_date);
+    tasks[i] = create_DevelopmentTask(i, new_description, new_priority_of_task,
+                                      new_production_date);
     if (tasks[i] == NULL) {
       return EXIT_FAILURE;
     }
@@ -70,7 +73,8 @@ int main() {
   }
 
   const size_t size_of_keys = 4;
-  int keys[] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS, MAX_PRIORITY};
+  int keys[] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
+                MAX_PRIORITY};
   DevelopmentTask** sorted_tasks;
   sorted_tasks = radix_sort(keys, size_of_keys, tasks, number_of_tasks);
   if (sorted_tasks == NULL) {

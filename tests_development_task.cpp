@@ -1,5 +1,5 @@
 extern "C" {
-  #include "development_task.c"
+#include "development_task.c"
 }
 
 #include "gtest/gtest.h"
@@ -18,7 +18,6 @@ TEST(len_of_string, t2) {
   char* string = NULL;
   ASSERT_EQ(len_of_string(string), EXIT_FAILURE);
 }
-
 
 TEST(check_correct_date, t1) {
   const int* date = NULL;
@@ -86,17 +85,21 @@ TEST(distribution_sort, t1) {
 //проверим сортировку двух задач по одному ключу, например по дню недели
 TEST(distribution_sort, t2) {
   size_t size_of_tasks = 2;
-  DevelopmentTask** not_sorted_tasks = (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
+  DevelopmentTask** not_sorted_tasks =
+      (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
   int first_date[3] = {31, 10, 2020};
-  int second_date[3] = {20, 10, 2020}; // должна стать первой
+  int second_date[3] = {20, 10, 2020};  // должна стать первой
   char description[4] = {'1', '2', '3', END_OF_STRING};
   int number = 0;
   int priority = MIN_PRIORITY;
-  not_sorted_tasks[0] = create_DevelopmentTask(number, description, priority, first_date);
-  not_sorted_tasks[1] = create_DevelopmentTask(number, description, priority, second_date);
+  not_sorted_tasks[0] =
+      create_DevelopmentTask(number, description, priority, first_date);
+  not_sorted_tasks[1] =
+      create_DevelopmentTask(number, description, priority, second_date);
 
   int key = NUMBER_OF_DAYS;
-  not_sorted_tasks = distribution_sort(key, key, not_sorted_tasks, size_of_tasks);
+  not_sorted_tasks =
+      distribution_sort(key, key, not_sorted_tasks, size_of_tasks);
   ASSERT_EQ(not_sorted_tasks[0]->production_date[0], second_date[0]);
   ASSERT_EQ(not_sorted_tasks[1]->production_date[0], first_date[0]);
 
@@ -109,7 +112,8 @@ TEST(distribution_sort, t2) {
 TEST(radix_sort, t1) {
   DevelopmentTask** null_tasks = NULL;
   const size_t size_of_keys = 4;
-  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS, MAX_PRIORITY};
+  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
+                            MAX_PRIORITY};
   ASSERT_TRUE(radix_sort(keys, size_of_keys, null_tasks, 0) == NULL);
 }
 
@@ -140,15 +144,21 @@ TEST(radix_sort, t2) {
   char description[4] = {'1', '2', '3', END_OF_STRING};
   int number = 0;
 
-  DevelopmentTask** tasks = (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
+  DevelopmentTask** tasks =
+      (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
 
-  tasks[0] = create_DevelopmentTask(number, description, first_priority, first_date); // должна стать третьей
-  tasks[1] = create_DevelopmentTask(number, description, second_priority, second_date);// должна стать второй
-  tasks[2] = create_DevelopmentTask(number, description, third_priority, third_date);// должна стать четвертой
-  tasks[3] = create_DevelopmentTask(number, description, fourth_priority, fourth_date);// должна стать первой
+  tasks[0] = create_DevelopmentTask(number, description, first_priority,
+                                    first_date);  // должна стать третьей
+  tasks[1] = create_DevelopmentTask(number, description, second_priority,
+                                    second_date);  // должна стать второй
+  tasks[2] = create_DevelopmentTask(number, description, third_priority,
+                                    third_date);  // должна стать четвертой
+  tasks[3] = create_DevelopmentTask(number, description, fourth_priority,
+                                    fourth_date);  // должна стать первой
 
   const size_t size_of_keys = 4;
-  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS, MAX_PRIORITY};
+  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
+                            MAX_PRIORITY};
   DevelopmentTask** sorted_tasks;
   sorted_tasks = radix_sort(keys, size_of_keys, tasks, size_of_tasks);
   ASSERT_EQ(sorted_tasks[0]->priority, tasks[3]->priority);
@@ -178,7 +188,7 @@ TEST(radix_sort, t2) {
   free(sorted_tasks);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

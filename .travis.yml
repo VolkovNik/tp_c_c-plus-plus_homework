@@ -29,7 +29,6 @@ script:
   - make || travis_terminate 1
   - ./gtest_develop
   - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest_develop || travis_terminate 1
-  - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./tp_c_cpp_homework || travis_terminate 1
   - gcov development_task
 
 after_script:
