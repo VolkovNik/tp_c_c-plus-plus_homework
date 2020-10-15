@@ -15,6 +15,7 @@ install:
   - sudo apt-get install libgtest-dev 
   - sudo apt-get install valgrind 
   - sudo apt-get install cmake
+  - sudo apt-get install lcov
   - sudo apt-get install clang-format
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
   - tar xf release-1.8.0.tar.gz
@@ -33,7 +34,8 @@ script:
   - make || travis_terminate 1
   - ./gtest_develop
   - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest_develop || travis_terminate 1
-  - gcov development_task
+  - gcov development_task.c
 
 after_script:
+  - lcov —capture —directory ./CMakeFiles/gtest_develop.dir —output-file coverage.info
   - bash <(curl -s https://codecov.io/bash)
