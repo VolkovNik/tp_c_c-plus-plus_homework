@@ -16,7 +16,7 @@ install:
   - sudo apt-get install valgrind 
   - sudo apt-get install cmake
   - sudo apt-get install lcov
-  - sudo apt-get install gcovr
+  - sudo apt-get install cppcheck
   - sudo apt-get install clang-format
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
   - tar xf release-1.8.0.tar.gz
@@ -29,6 +29,7 @@ install:
 
 before_script:
   - clang-format -i -style=Google *.h *.cpp *.c
+  - ./run_cppcheck.sh || travis_terminate 1
 
 script:
   - cmake .
