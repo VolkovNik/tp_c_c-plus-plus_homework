@@ -1,0 +1,40 @@
+dist: trusty
+sudo: required
+
+language: c
+
+os: linux
+
+compiler: gcc
+
+env:
+  - TARGET_CPU=amd64 BUILD_CONFIGURATION=Debug
+  - TARGET_CPU=amd64 BUILD_CONFIGURATION=Release
+  - TARGET_CPU=x86 BUILD_CONFIGURATION=Debug
+  - TARGET_CPU=x86 BUILD_CONFIGURATION=Release
+  - CODECOV_TOKEN="b8b047b1-3e96-4f86-bc0a-8196644d5f68"
+
+install:
+  - sudo apt-get update
+  - sudo apt-get install libgtest-dev 
+  - sudo apt-get install valgrind 
+  - sudo apt-get install cmake
+  - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+  - tar xf release-1.8.0.tar.gz
+  - cd googletest-release-1.8.0
+  - cmake -DBUILD_SHARED_LIBS=ON .
+  - make
+  - sudo cp -a googletest/include/gtest /usr/include
+  - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/
+  - cd ../
+
+script:
+  - cmake .
+  - make || travis_terminate 1
+  - ./gtest_develop
+  - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest_develop || travis_terminate 1
+  - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./tp_c_cpp_homework || travis_terminate 1
+  - gcov development_task
+
+after_script:
+  - bash <(curl -s https://codecov.io/bash)
