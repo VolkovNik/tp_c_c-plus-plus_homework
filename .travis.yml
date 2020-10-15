@@ -15,6 +15,7 @@ install:
   - sudo apt-get install libgtest-dev 
   - sudo apt-get install valgrind 
   - sudo apt-get install cmake
+  - sudo apt-get install clang-format
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
   - tar xf release-1.8.0.tar.gz
   - cd googletest-release-1.8.0
@@ -23,6 +24,9 @@ install:
   - sudo cp -a googletest/include/gtest /usr/include
   - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/
   - cd ../
+
+before_script:
+  -clang-format -i -style=Google *.h *.cpp *.c
 
 script:
   - cmake .
