@@ -23,10 +23,10 @@ install:
   - make
   - sudo cp -a googletest/include/gtest /usr/include
   - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/
-  - cd -
+  - cd ../
 
 before_script:
-  -clang-format -i -style=Google *.h *.cpp *.c
+  - clang-format -i -style=Google *.h *.cpp *.c
 
 script:
   - cmake .
