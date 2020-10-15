@@ -3,7 +3,7 @@ project(tp_c_cpp_homework)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-Wall -g -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-Wall -g -fprofile-arcs -ftest-coverage -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS")
 
 enable_testing()
 find_package(GTest REQUIRED)
