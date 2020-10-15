@@ -70,7 +70,7 @@ int main() {
   }
 
   const size_t size_of_keys = 4;
-  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS, MAX_PRIORITY};
+  int keys[] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS, MAX_PRIORITY};
   DevelopmentTask** sorted_tasks;
   sorted_tasks = radix_sort(keys, size_of_keys, tasks, number_of_tasks);
   if (sorted_tasks == NULL) {
