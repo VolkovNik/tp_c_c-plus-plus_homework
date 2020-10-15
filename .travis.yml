@@ -16,6 +16,7 @@ install:
   - sudo apt-get install valgrind 
   - sudo apt-get install cmake
   - sudo apt-get install lcov
+  - sudo apt-get install gcovr
   - sudo apt-get install clang-format
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
   - tar xf release-1.8.0.tar.gz
@@ -36,5 +37,5 @@ script:
   - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest_develop || travis_terminate 1
 
 after_script:
-  - gcovr ./CMakeFiles/gtest_develop.dir -r .
+  - lcov —-capture -—directory ./CMakeFiles/gtest_develop.dir -—output-file coverage.info
   - bash <(curl -s https://codecov.io/bash)
