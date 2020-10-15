@@ -29,7 +29,7 @@ install:
 
 before_script:
   - clang-format -i -style=Google *.h *.cpp *.c
-  - ./run_cppcheck.sh || travis_terminate 1
+  - sh run_cppcheck.sh || travis_terminate 1
 
 script:
   - cmake .
