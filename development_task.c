@@ -58,7 +58,7 @@ int printf_task(const DevelopmentTask* my_task) {
   printf("%d\n", my_task->production_date[LEN_OF_PRODUCTION_DATE - 1]);
   printf("Описание задачи: ");
 
-  int len_description = len_of_string(my_task->description);
+size_t len_description = len_of_string(my_task->description);
   for (size_t i = 0; i < len_description; ++i) {
     printf("%c", my_task->description[i]);
   }
@@ -157,7 +157,7 @@ DevelopmentTask** distribution_sort(int key, size_t number_of_keys, DevelopmentT
     return NULL;
   }
 
-  for (size_t j = size_of_tasks - 1; j < SIZE_MAX; --j) {
+  for (int j = size_of_tasks - 1; j >= 0; --j) {
     switch (key) {
       case NUMBER_OF_YEARS:
         key_value = my_tasks[j]->production_date[2] - MIN_YEAR;
