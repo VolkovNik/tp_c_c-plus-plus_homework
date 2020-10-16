@@ -6,7 +6,7 @@ extern "C" {
 
 TEST(get_date, t1) {
   int* null_date = NULL;
-  ASSERT_EQ(get_date(null_date), EXIT_FAILURE);
+  ASSERT_EQ(get_date(null_date), EXIT_FAILURE_WITH_MNS);
 }
 
 TEST(len_of_string, t1) {
@@ -16,32 +16,32 @@ TEST(len_of_string, t1) {
 
 TEST(len_of_string, t2) {
   char* string = NULL;
-  ASSERT_EQ(len_of_string(string), EXIT_FAILURE);
+  ASSERT_EQ(len_of_string(string), EXIT_FAILURE_WITH_MNS);
 }
 
 TEST(check_correct_date, t1) {
   const int* date = NULL;
-  ASSERT_EQ(check_correct_date(date), EXIT_FAILURE);
+  ASSERT_EQ(check_correct_date(date), false);
 }
 
 TEST(check_correct_date, t2) {
   const int uncorrect_date[3] = {32, 12, 2000};
-  ASSERT_EQ(check_correct_date(uncorrect_date), EXIT_FAILURE);
+  ASSERT_EQ(check_correct_date(uncorrect_date), false);
 }
 
 TEST(check_correct_date, t3) {
   const int uncorrect_date[3] = {31, 13, 2000};
-  ASSERT_EQ(check_correct_date(uncorrect_date), EXIT_FAILURE);
+  ASSERT_EQ(check_correct_date(uncorrect_date), false);
 }
 
 TEST(check_correct_date, t4) {
   const int uncorrect_date[3] = {31, 12, 3000};
-  ASSERT_EQ(check_correct_date(uncorrect_date), EXIT_FAILURE);
+  ASSERT_EQ(check_correct_date(uncorrect_date), false);
 }
 
 TEST(check_correct_date, t5) {
   const int correct_date[3] = {31, 12, 2000};
-  ASSERT_EQ(check_correct_date(correct_date), EXIT_SUCCESS);
+  ASSERT_EQ(check_correct_date(correct_date), true);
 }
 
 TEST(print_task, t1) {
@@ -77,43 +77,88 @@ TEST(free_development_task, t2) {
   ASSERT_EQ(free_development_task(my_task), EXIT_SUCCESS);
 }
 
-TEST(distribution_sort, t1) {
-  development_task_t** null_tasks = NULL;
+class test_sorts : public ::testing::Test {
+ protected:
+  void SetUp() {
+    null_tasks = NULL;
+
+    size_of_tasks = 4;
+
+    first_priority = 9;
+    second_priority = 9;
+    third_priority = 9;
+    fourth_priority = 10;
+
+    number = 0;
+
+    tasks = (development_task_t**)malloc(size_of_tasks * sizeof(development_task_t*));
+
+    tasks[0] = create_development_task(number, description, first_priority,
+                                       first_date);  // должна стать третьей
+    tasks[1] = create_development_task(number, description, second_priority,
+                                       second_date);  // должна стать второй
+    tasks[2] = create_development_task(number, description, third_priority,
+                                       third_date);  // должна стать четвертой
+    tasks[3] = create_development_task(number, description, fourth_priority,
+                                       fourth_date);  // должна стать первой
+
+  }
+
+  void TearDown() {
+    for (size_t i = 0; i < size_of_tasks; ++i) {
+      free_development_task(tasks[i]);
+    }
+    free(tasks);
+  }
+  int key = NUMBER_OF_DAYS;
+
+  development_task_t** null_tasks;
+  size_t size_of_tasks;
+
+  int first_date[3] = {23, 12, 2000};
+  int second_date[3] = {22, 12, 2000};
+  int third_date[3] = {2, 2, 2001};
+  int fourth_date[3] = {2, 2, 2020};
+
+  int first_priority;
+  int second_priority;
+  int third_priority;
+  int fourth_priority;
+
+  char description[4] = {'1', '2', '3', END_OF_STRING};
+
+  int number;
+
+  development_task_t** tasks;
+
+  const size_t size_of_keys = 4;
+
+  int keys[4] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
+                            MAX_PRIORITY};
+};
+
+TEST_F(test_sorts, t1) {
   ASSERT_TRUE(distribution_sort(1, 1, null_tasks, 0) == NULL);
 }
 
-//проверим сортировку двух задач по одному ключу, например по дню недели
-TEST(distribution_sort, t2) {
-  size_t size_of_tasks = 2;
-  development_task_t** not_sorted_tasks =
-      (development_task_t**)malloc(size_of_tasks * sizeof(development_task_t*));
-  int first_date[3] = {31, 10, 2020};
-  int second_date[3] = {20, 10, 2020};  // должна стать первой
-  char description[4] = {'1', '2', '3', END_OF_STRING};
-  int number = 0;
-  int priority = MIN_PRIORITY;
-  not_sorted_tasks[0] =
-      create_development_task(number, description, priority, first_date);
-  not_sorted_tasks[1] =
-      create_development_task(number, description, priority, second_date);
+/*
+ * Тестовые данные
+кол-во записей 2
+приоритет 1: 9 -> должна стать второй задачей
+дата 1:23 12 2000
+приоритет 2: 9 -> должна стать первой задачей
+дата 2: 22 12 2000
+ */
+TEST_F(test_sorts, t2) {
+  size_of_tasks = 2;
+  tasks = distribution_sort(key, key, tasks, size_of_tasks);
 
-  int key = NUMBER_OF_DAYS;
-  not_sorted_tasks =
-      distribution_sort(key, key, not_sorted_tasks, size_of_tasks);
-  ASSERT_EQ(not_sorted_tasks[0]->production_date[0], second_date[0]);
-  ASSERT_EQ(not_sorted_tasks[1]->production_date[0], first_date[0]);
+  ASSERT_EQ(tasks[0]->production_date[0], second_date[0]);
+  ASSERT_EQ(tasks[1]->production_date[0], first_date[0]);
 
-  for (size_t i = 0; i < size_of_tasks; ++i) {
-    free_development_task(not_sorted_tasks[i]);
-  }
-  free(not_sorted_tasks);
 }
 
-TEST(radix_sort, t1) {
-  development_task_t** null_tasks = NULL;
-  const size_t size_of_keys = 4;
-  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
-                            MAX_PRIORITY};
+TEST_F(test_sorts, t3) {
   ASSERT_TRUE(radix_sort(keys, size_of_keys, null_tasks, 0) == NULL);
 }
 
@@ -129,38 +174,10 @@ TEST(radix_sort, t1) {
 приоритет 4: 10 -> ... 1
 дата 4: 2 2 2020
  */
-TEST(radix_sort, t2) {
-  size_t size_of_tasks = 4;
-  int first_date[3] = {23, 12, 2000};
-  int second_date[3] = {22, 12, 2000};
-  int third_date[3] = {2, 2, 2001};
-  int fourth_date[3] = {2, 2, 2020};
-
-  int first_priority = 9;
-  int second_priority = 9;
-  int third_priority = 9;
-  int fourth_priority = 10;
-
-  char description[4] = {'1', '2', '3', END_OF_STRING};
-  int number = 0;
-
-  development_task_t** tasks =
-      (development_task_t**)malloc(size_of_tasks * sizeof(development_task_t*));
-
-  tasks[0] = create_development_task(number, description, first_priority,
-                                     first_date);  // должна стать третьей
-  tasks[1] = create_development_task(number, description, second_priority,
-                                     second_date);  // должна стать второй
-  tasks[2] = create_development_task(number, description, third_priority,
-                                     third_date);  // должна стать четвертой
-  tasks[3] = create_development_task(number, description, fourth_priority,
-                                     fourth_date);  // должна стать первой
-
-  const size_t size_of_keys = 4;
-  int keys[size_of_keys] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
-                            MAX_PRIORITY};
+TEST_F(test_sorts, t4) {
   development_task_t** sorted_tasks;
   sorted_tasks = radix_sort(keys, size_of_keys, tasks, size_of_tasks);
+
   ASSERT_EQ(sorted_tasks[0]->priority, tasks[3]->priority);
   ASSERT_EQ(sorted_tasks[0]->production_date[0], tasks[3]->production_date[0]);
   ASSERT_EQ(sorted_tasks[0]->production_date[1], tasks[3]->production_date[1]);
@@ -181,10 +198,6 @@ TEST(radix_sort, t2) {
   ASSERT_EQ(sorted_tasks[3]->production_date[1], tasks[2]->production_date[1]);
   ASSERT_EQ(sorted_tasks[3]->production_date[2], tasks[2]->production_date[2]);
 
-  for (size_t i = 0; i < size_of_tasks; ++i) {
-    free_development_task(tasks[i]);
-  }
-  free(tasks);
   free(sorted_tasks);
 }
 
