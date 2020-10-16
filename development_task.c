@@ -1,8 +1,8 @@
 #include "development_task.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 int get_date(int* new_production_date) {
   if (new_production_date == NULL) {
@@ -69,12 +69,14 @@ int print_task(const development_task_t* my_task) {
 }
 
 development_task_t* create_development_task(int number, char* description,
-                                            int priority, int* production_date) {
+                                            int priority,
+                                            int* production_date) {
   if (description == NULL || !check_correct_date(production_date)) {
     return NULL;
   }
 
-  development_task_t* my_task = (development_task_t*)malloc(sizeof(development_task_t));
+  development_task_t* my_task =
+      (development_task_t*)malloc(sizeof(development_task_t));
 
   if (my_task == NULL) {
     return NULL;
@@ -194,8 +196,8 @@ development_task_t** radix_sort(int* keys, size_t size_of_keys,
     return NULL;
   }
 
-  development_task_t** sorted_my_tasks =
-      (development_task_t**)malloc(size_of_my_tasks * sizeof(development_task_t*));
+  development_task_t** sorted_my_tasks = (development_task_t**)malloc(
+      size_of_my_tasks * sizeof(development_task_t*));
   if (sorted_my_tasks == NULL) {
     return NULL;
   }

@@ -52,7 +52,8 @@ TEST(print_task, t1) {
 TEST(print_task, t2) {
   char string[4] = {'1', '2', '3', END_OF_STRING};
   int correct_date[3] = {31, 12, 2000};
-  development_task_t* my_task = create_development_task(1, string, 1, correct_date);
+  development_task_t* my_task =
+      create_development_task(1, string, 1, correct_date);
   ASSERT_EQ(print_task(my_task), EXIT_SUCCESS);
   free_development_task(my_task);
 }
@@ -60,7 +61,8 @@ TEST(print_task, t2) {
 TEST(print_task, t3) {
   char* string = NULL;
   int correct_date[3] = {31, 12, 2000};
-  development_task_t* my_task = create_development_task(1, string, 1, correct_date);
+  development_task_t* my_task =
+      create_development_task(1, string, 1, correct_date);
   ASSERT_EQ(print_task(my_task), EXIT_FAILURE);
   free_development_task(my_task);
 }
@@ -73,7 +75,8 @@ TEST(free_development_task, t1) {
 TEST(free_development_task, t2) {
   char string[4] = {'1', '2', '3', END_OF_STRING};
   int correct_date[3] = {31, 12, 2000};
-  development_task_t* my_task = create_development_task(1, string, 1, correct_date);
+  development_task_t* my_task =
+      create_development_task(1, string, 1, correct_date);
   ASSERT_EQ(free_development_task(my_task), EXIT_SUCCESS);
 }
 
@@ -91,7 +94,8 @@ class test_sorts : public ::testing::Test {
 
     number = 0;
 
-    tasks = (development_task_t**)malloc(size_of_tasks * sizeof(development_task_t*));
+    tasks = (development_task_t**)malloc(size_of_tasks *
+                                         sizeof(development_task_t*));
 
     tasks[0] = create_development_task(number, description, first_priority,
                                        first_date);  // должна стать третьей
@@ -101,7 +105,6 @@ class test_sorts : public ::testing::Test {
                                        third_date);  // должна стать четвертой
     tasks[3] = create_development_task(number, description, fourth_priority,
                                        fourth_date);  // должна стать первой
-
   }
 
   void TearDown() {
@@ -134,7 +137,7 @@ class test_sorts : public ::testing::Test {
   const size_t size_of_keys = 4;
 
   int keys[4] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
-                            MAX_PRIORITY};
+                 MAX_PRIORITY};
 };
 
 TEST_F(test_sorts, t1) {
@@ -155,7 +158,6 @@ TEST_F(test_sorts, t2) {
 
   ASSERT_EQ(tasks[0]->production_date[0], second_date[0]);
   ASSERT_EQ(tasks[1]->production_date[0], first_date[0]);
-
 }
 
 TEST_F(test_sorts, t3) {

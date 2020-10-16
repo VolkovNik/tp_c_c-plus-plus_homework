@@ -42,8 +42,8 @@ int main() {
   printf("Введите количество задач: ");
   scanf("%d", &number_of_tasks);
 
-  development_task_t** tasks =
-      (development_task_t**)malloc(number_of_tasks * sizeof(development_task_t*));
+  development_task_t** tasks = (development_task_t**)malloc(
+      number_of_tasks * sizeof(development_task_t*));
   if (tasks == NULL) {
     return EXIT_FAILURE;
   }

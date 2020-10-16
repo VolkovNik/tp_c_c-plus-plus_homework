@@ -1,8 +1,8 @@
 #ifndef TP_C_CPP_HOMEWORK_DEVELOPMENT_TASK_H
 #define TP_C_CPP_HOMEWORK_DEVELOPMENT_TASK_H
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define LEN_OF_PRODUCTION_DATE 3
 #define END_OF_STRING '\0'
