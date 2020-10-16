@@ -42,8 +42,8 @@ int main() {
   printf("Введите количество задач: ");
   scanf("%d", &number_of_tasks);
 
-  DevelopmentTask** tasks =
-      (DevelopmentTask**)malloc(number_of_tasks * sizeof(DevelopmentTask*));
+  development_task_t** tasks =
+      (development_task_t**)malloc(number_of_tasks * sizeof(development_task_t*));
   if (tasks == NULL) {
     return EXIT_FAILURE;
   }
@@ -63,8 +63,8 @@ int main() {
       return EXIT_FAILURE;
     }
 
-    tasks[i] = create_DevelopmentTask(i, new_description, new_priority_of_task,
-                                      new_production_date);
+    tasks[i] = create_development_task(i, new_description, new_priority_of_task,
+                                       new_production_date);
     if (tasks[i] == NULL) {
       return EXIT_FAILURE;
     }
@@ -75,14 +75,14 @@ int main() {
   const size_t size_of_keys = 4;
   int keys[] = {NUMBER_OF_DAYS, NUMBER_OF_MONTHS, NUMBER_OF_YEARS,
                 MAX_PRIORITY};
-  DevelopmentTask** sorted_tasks;
+  development_task_t** sorted_tasks;
   sorted_tasks = radix_sort(keys, size_of_keys, tasks, number_of_tasks);
   if (sorted_tasks == NULL) {
     return EXIT_FAILURE;
   }
 
   for (size_t i = 0; i < number_of_tasks; ++i) {
-    printf_task(sorted_tasks[i]);
+    print_task(sorted_tasks[i]);
   }
 
   for (size_t i = 0; i < number_of_tasks; ++i) {

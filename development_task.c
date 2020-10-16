@@ -2,22 +2,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 int get_date(int* new_production_date) {
   if (new_production_date == NULL) {
-    return EXIT_FAILURE;
+    return EXIT_FAILURE_WITH_MNS;
   }
 
   for (size_t i = 0; i < LEN_OF_PRODUCTION_DATE; ++i) {
-    scanf("%d", &new_production_date[i]);
+    if (scanf("%d", &new_production_date[i])) {
+      return EXIT_FAILURE;
+    }
   }
 
   return EXIT_SUCCESS;
 }
 
-size_t len_of_string(const char* string) {
+int len_of_string(const char* string) {
   if (string == NULL) {
-    return EXIT_FAILURE;
+    return EXIT_FAILURE_WITH_MNS;
   }
 
   size_t length = 0;
@@ -28,21 +31,21 @@ size_t len_of_string(const char* string) {
   return length;
 }
 
-int check_correct_date(const int* date_for_checking) {
+bool check_correct_date(const int* date_for_checking) {
   if (date_for_checking == NULL) {
-    return EXIT_FAILURE;
+    return false;
   }
 
   if (date_for_checking[0] > 31 || date_for_checking[0] < 1 ||
       date_for_checking[1] > 12 || date_for_checking[1] < 1 ||
       date_for_checking[2] > 2020 || date_for_checking[2] < 1980) {
-    return EXIT_FAILURE;
+    return false;
   }
 
-  return EXIT_SUCCESS;
+  return true;
 }
 
-int printf_task(const DevelopmentTask* my_task) {
+int print_task(const development_task_t* my_task) {
   if (my_task == NULL) {
     return EXIT_FAILURE;
   }
@@ -65,13 +68,13 @@ int printf_task(const DevelopmentTask* my_task) {
   return EXIT_SUCCESS;
 }
 
-DevelopmentTask* create_DevelopmentTask(int number, char* description,
-                                        int priority, int* production_date) {
+development_task_t* create_development_task(int number, char* description,
+                                            int priority, int* production_date) {
   if (description == NULL || check_correct_date(production_date)) {
     return NULL;
   }
 
-  DevelopmentTask* my_task = (DevelopmentTask*)malloc(sizeof(DevelopmentTask));
+  development_task_t* my_task = (development_task_t*)malloc(sizeof(development_task_t));
 
   if (my_task == NULL) {
     return NULL;
@@ -100,7 +103,7 @@ DevelopmentTask* create_DevelopmentTask(int number, char* description,
   return my_task;
 }
 
-int free_development_task(DevelopmentTask* task) {
+int free_development_task(development_task_t* task) {
   if (task == NULL) {
     return EXIT_FAILURE;
   }
@@ -113,9 +116,9 @@ int free_development_task(DevelopmentTask* task) {
 
 // сортировка по одному ключу(key) в порядке возрастания, в нашем случае ключ
 // это - кол-во дней, кол-во месяцев, кол-во лет, макс значение приоритета
-DevelopmentTask** distribution_sort(int key, size_t number_of_keys,
-                                    DevelopmentTask** my_tasks,
-                                    size_t size_of_tasks) {
+development_task_t** distribution_sort(int key, size_t number_of_keys,
+                                       development_task_t** my_tasks,
+                                       size_t size_of_tasks) {
   if (my_tasks == NULL) {
     return NULL;
   }
@@ -151,8 +154,8 @@ DevelopmentTask** distribution_sort(int key, size_t number_of_keys,
     count[i] = count[i] + count[i - 1];
   }
 
-  DevelopmentTask** sorted_my_tasks =
-      (DevelopmentTask**)malloc(size_of_tasks * sizeof(DevelopmentTask*));
+  development_task_t** sorted_my_tasks =
+      (development_task_t**)malloc(size_of_tasks * sizeof(development_task_t*));
   if (sorted_my_tasks == NULL) {
     return NULL;
   }
@@ -184,15 +187,15 @@ DevelopmentTask** distribution_sort(int key, size_t number_of_keys,
 }
 
 // поразрядная сортировка нашей структуры, где keys - ключи
-DevelopmentTask** radix_sort(int* keys, size_t size_of_keys,
-                             DevelopmentTask** my_tasks,
-                             size_t size_of_my_tasks) {
+development_task_t** radix_sort(int* keys, size_t size_of_keys,
+                                development_task_t** my_tasks,
+                                size_t size_of_my_tasks) {
   if (my_tasks == NULL) {
     return NULL;
   }
 
-  DevelopmentTask** sorted_my_tasks =
-      (DevelopmentTask**)malloc(size_of_my_tasks * sizeof(DevelopmentTask*));
+  development_task_t** sorted_my_tasks =
+      (development_task_t**)malloc(size_of_my_tasks * sizeof(development_task_t*));
   if (sorted_my_tasks == NULL) {
     return NULL;
   }
