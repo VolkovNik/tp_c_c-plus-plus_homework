@@ -70,7 +70,7 @@ int print_task(const development_task_t* my_task) {
 
 development_task_t* create_development_task(int number, char* description,
                                             int priority, int* production_date) {
-  if (description == NULL || check_correct_date(production_date)) {
+  if (description == NULL || !check_correct_date(production_date)) {
     return NULL;
   }
 
