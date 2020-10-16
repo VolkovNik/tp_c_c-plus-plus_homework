@@ -1,0 +1,42 @@
+dist: xenial
+sudo: required
+
+language: c
+
+os: linux
+
+compiler: gcc
+
+env:
+  - CODECOV_TOKEN="b8b047b1-3e96-4f86-bc0a-8196644d5f68"
+
+install:
+  - sudo apt-get update
+  - sudo apt-get install libgtest-dev 
+  - sudo apt-get install valgrind 
+  - sudo apt-get install cmake
+  - sudo apt-get install lcov
+  - sudo apt-get install cppcheck
+  - sudo apt-get install clang-format
+  - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+  - tar xf release-1.8.0.tar.gz
+  - cd googletest-release-1.8.0
+  - cmake -DBUILD_SHARED_LIBS=ON .
+  - make
+  - sudo cp -a googletest/include/gtest /usr/include
+  - sudo cp -a googlemock/gtest/libgtest_main.so googlemock/gtest/libgtest.so /usr/lib/
+  - cd ../
+
+before_script:
+  - clang-format -i -style=Google *.h *.cpp *.c
+  - sh run_cppcheck.sh || travis_terminate 1
+
+script:
+  - cmake .
+  - make || travis_terminate 1
+  - ./gtest_develop
+  - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest_develop || travis_terminate 1
+
+after_script:
+  - lcov —-capture -—directory ./CMakeFiles/gtest_develop.dir -—output-file coverage.info
+  - bash <(curl -s https://codecov.io/bash)
