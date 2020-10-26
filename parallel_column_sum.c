@@ -90,7 +90,7 @@ double* find_column_sum_parallel(const Matrix* matrix) {
   int status = 0;
   for (size_t i = 0; i < number_of_proc; ++i) {
     wait(&status);
-    
+
     if (!WIFEXITED(status)) {
       if (munmap(shared_memory, sizeof(double) * number_of_columns)) {
         return NULL;
