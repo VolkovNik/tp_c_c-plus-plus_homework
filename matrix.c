@@ -17,8 +17,13 @@ Matrix* create_matrix_from_file(const char* path_file) {
     return NULL;
   }
 
-  fscanf(fp, "%zu", &my_matrix->num_rows);
-  fscanf(fp, "%zu", &my_matrix->num_cols);
+  if (!fscanf(fp, "%zu", &my_matrix->num_rows)) {
+    return NULL;
+  }
+
+  if (!fscanf(fp, "%zu", &my_matrix->num_cols)) {
+    return NULL;
+  }
 
   my_matrix->matrix = (double**)malloc(my_matrix->num_rows * sizeof(double*));
   if (my_matrix->matrix == NULL) {
@@ -34,11 +39,15 @@ Matrix* create_matrix_from_file(const char* path_file) {
 
   for (size_t i = 0; i < my_matrix->num_rows; ++i) {
     for (size_t j = 0; j < my_matrix->num_cols; ++j) {
-      fscanf(fp, "%lf", &my_matrix->matrix[i][j]);
+      if (!fscanf(fp, "%lf", &my_matrix->matrix[i][j])) {
+        return NULL;
+      }
     }
   }
 
-  fclose(fp);
+  if (fclose(fp)) {
+    return NULL;
+  }
   return my_matrix;
 }
 
