@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include "matrix.h"
+#include "parallel_column_sum.h"
+#include "sequential_column_sum.h"
 
 int main(void) {
-  Matrix *test = create_matrix_from_file("test.txt");
+  Matrix *test = create_matrix_from_file("../tests/test1.txt");
 
   size_t test_rows = 0;
   get_rows(test, &test_rows);
@@ -21,10 +25,30 @@ int main(void) {
     printf("\n");
   }
 
-  double val = -1;
-  get_elem(test, 1, 1, &val);
-  printf("Our value at 1,1: %lf\n", val);
+  double *check_sum = find_column_sum_sequentially(test);
+  if (check_sum == NULL) {
+    return EXIT_FAILURE;
+  }
+
+  for (size_t i = 0; i < test_cols; ++i) {
+    printf("%lf ", check_sum[i]);
+  }
+  puts("\n");
+
+  free(check_sum);
+
+  long number_of_proc = 0;
+  number_of_proc = sysconf(_SC_NPROCESSORS_ONLN);
+  printf("number of proc: %ld", number_of_proc);
+  puts("\n");
+
+  check_sum = find_column_sum_parallel(test);
+  for (size_t i = 0; i < test_cols; ++i) {
+    printf("%lf ", check_sum[i]);
+  }
+  puts("\n");
 
   free_matrix(test);
+  free(check_sum);
   return 0;
 }

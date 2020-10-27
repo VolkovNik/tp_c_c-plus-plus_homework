@@ -18,5 +18,4 @@ int free_matrix(Matrix* matrix);
 int get_rows(const Matrix* matrix, size_t* rows);
 int get_cols(const Matrix* matrix, size_t* cols);
 
-
 #endif  // TP_C_CPP_HOMEWORK__MATRIX_H_
