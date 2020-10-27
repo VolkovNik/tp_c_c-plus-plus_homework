@@ -11,7 +11,7 @@ extern "C" {
 #define TEST_WITHOUT_NMB_COLS \
   "../tests/null_cols.txt"  // в файле нет кол-ва столбцов
 #define TEST_WITHOUT_MTRX "../tests/null_matrix.txt"  // в файле нет матрицы
-#define TEST_MTRX_FULL_OF_ONE "../tests/test1.txt"  // матрица из единиц
+#define TEST_MTRX_FULL_OF_ONE "tests/test1.txt"  // матрица из единиц
 
 TEST(test_matrix, t1) {
   ASSERT_TRUE(create_matrix_from_file(EMPTY_TEST) == NULL);
