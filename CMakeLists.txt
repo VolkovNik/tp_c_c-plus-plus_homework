@@ -15,9 +15,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(gtest tests.cpp)
-target_link_libraries(gtest sequential)
-target_link_libraries(gtest parallel)
-target_link_libraries(gtest ${GTEST_LIBRARIES} pthread)
+target_link_libraries(gtest ${GTEST_LIBRARIES} sequential parallel)
 
 add_executable(tp_c_cpp_homework main.c matrix.h matrix.c)
 target_link_libraries(tp_c_cpp_homework sequential)
