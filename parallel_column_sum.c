@@ -7,6 +7,8 @@
 
 #include "matrix.h"
 
+// делю кол-во рядов на кол-во процессов, таким образом нахожу границы left и right,
+// чтобы каждый процессор искал сумму столбцов в нужных ему границах
 int sum_one_column(const Matrix *matrix, long left_column, long right_column,
                    size_t number_of_rows, double *shared_memory) {
   if (matrix == NULL || !shared_memory) {
