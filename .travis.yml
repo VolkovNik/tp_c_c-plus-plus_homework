@@ -34,7 +34,7 @@ before_script:
 script:
   - cmake .
   - make || travis_terminate 1
-  - ./gtest_develop
+  - ./gtest
   - valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --leak-resolution=med  --track-origins=yes ./gtest || travis_terminate 1
 
 after_script:
