@@ -16,6 +16,7 @@ install:
   - sudo apt-get install valgrind 
   - sudo apt-get install cmake
   - sudo apt-get install lcov
+  - sudo apt-get install libstdc++6
   - sudo apt-get install cppcheck
   - sudo apt-get install clang-format
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
